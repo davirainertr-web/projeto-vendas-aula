@@ -42,7 +42,10 @@ public class Main {
         System.out.print("Preço: ");
         double preco = Double.parseDouble(sc.nextLine());
 
-        Produto p = new Produto(descricao, preco);
+        System.out.println("Estoque: ");
+        int estoque = Integer.parseInt(sc.nextLine());
+
+        Produto p = new Produto(descricao, preco, estoque);
         Produto salvo = produtoDao.salvar(p);
 
         if (salvo != null) {

@@ -16,13 +16,14 @@ public class ProdutoDao implements ICRUD<Produto> {
 
     @Override
     public Produto salvar(Produto prod) {
-        String sql = "insert into tb_produtos(descricao, preco) values(?,?)";
+        String sql = "insert into tb_produtos(descricao, preco, estoque) values(?,?)";
         Connection con = ConectaDB.conectar();
 
         try {
             PreparedStatement stm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, prod.getDescricao());
             stm.setDouble(2, prod.getPreco());
+            stm.setInt(3, prod.getEstoque());
             stm.execute();
 
             ResultSet rs = stm.getGeneratedKeys();
@@ -62,14 +63,15 @@ public class ProdutoDao implements ICRUD<Produto> {
 
     @Override
     public void alterar(Produto prod) {
-        String sql = "update tb_produtos set descricao = ?, preco = ? where id = ?";
+        String sql = "update tb_produtos set descricao=?, preco=?, estoque=?";
         Connection con = ConectaDB.conectar();
 
         try {
             PreparedStatement stm = con.prepareStatement(sql);
             stm.setString(1, prod.getDescricao());
             stm.setDouble(2, prod.getPreco());
-            stm.setInt(3, prod.getId());
+            stm.setInt(3, prod.getEstoque());
+            stm.setInt(4, prod.getId());
             stm.execute();
 
             stm.close();
@@ -94,7 +96,8 @@ public class ProdutoDao implements ICRUD<Produto> {
                 produto = new Produto(
                         rs.getInt("id"),
                         rs.getString("descricao"),
-                        rs.getDouble("preco")
+                        rs.getDouble("preco"),
+                        rs.getInt("estoque")
                 );
             }
 
@@ -122,7 +125,8 @@ public class ProdutoDao implements ICRUD<Produto> {
                 produtos.add(new Produto(
                         rs.getInt("id"),
                         rs.getString("descricao"),
-                        rs.getDouble("preco")
+                        rs.getDouble("preco"),
+                        rs.getInt("estoque")
                 ));
             }
 
