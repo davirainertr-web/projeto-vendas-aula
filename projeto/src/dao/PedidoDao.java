@@ -130,4 +130,14 @@ public class PedidoDao {
 
     pedido.getItens().add(new ItemPedido(produto, quantidade));
     }
+
+    public void removerDoCarrinho(Pedido pedido, int produtoId) {
+
+    boolean removido = pedido.getItens()
+            .removeIf(item -> item.getProduto().getId() == produtoId);
+
+    if (!removido) {
+        System.out.println("Produto não encontrado no carrinho.");
+    }
+    }
 }
