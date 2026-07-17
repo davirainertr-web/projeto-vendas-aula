@@ -16,7 +16,7 @@ public class ProdutoDao implements ICRUD<Produto> {
 
     @Override
     public Produto salvar(Produto prod) {
-        String sql = "insert into tb_produtos(descricao, preco, estoque) values(?,?)";
+        String sql = "insert into tb_produtos(descricao, preco, estoque) values(?,?,?)";
         Connection con = ConectaDB.conectar();
 
         try {
@@ -139,5 +139,26 @@ public class ProdutoDao implements ICRUD<Produto> {
         }
 
         return produtos;
+    }
+
+    public void baixarEstoque(int produtoId, int quantidade) {
+    String sql = "update tb_produtos set estoque = estoque - ? where id = ?";
+
+    Connection con = ConectaDB.conectar();
+
+    try {
+        PreparedStatement stm = con.prepareStatement(sql);
+
+        stm.setInt(1, quantidade);
+        stm.setInt(2, produtoId);
+
+        stm.executeUpdate();
+
+        stm.close();
+        con.close();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
     }
 }

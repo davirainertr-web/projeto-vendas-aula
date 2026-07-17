@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,6 +140,83 @@ public class PedidoDao {
 
     if (!removido) {
         System.out.println("Produto não encontrado no carrinho.");
+    }
+    }
+
+    public Pedido finalizarPedido(Pedido pedido) {
+
+    if (pedido.getItens().isEmpty()) {
+        System.out.println("Não é possível finalizar um pedido sem itens.");
+        return null;
+    }
+
+    String sqlPedido = "insert into tb_pedidos(cliente_id, data, status) values(?,?,?)";
+    String sqlItem = "insert into tb_itens_pedido(pedido_id, produto_id, quantidade, preco_unitario) values(?,?,?,?)";
+
+    Connection con = ConectaDB.conectar();
+
+    try {
+
+        con.setAutoCommit(false);
+
+        PreparedStatement stmPedido = con.prepareStatement(
+                sqlPedido,
+                Statement.RETURN_GENERATED_KEYS);
+
+        stmPedido.setInt(1, pedido.getCliente().getId());
+        stmPedido.setTimestamp(2, Timestamp.valueOf(pedido.getData()));
+        stmPedido.setString(3, Pedido.FINALIZADO);
+
+        stmPedido.execute();
+
+        ResultSet rs = stmPedido.getGeneratedKeys();
+
+        if (rs.next()) {
+            pedido.setId(rs.getInt(1));
+        }
+
+        rs.close();
+        stmPedido.close();
+
+        PreparedStatement stmItem = con.prepareStatement(sqlItem);
+
+        for (ItemPedido item : pedido.getItens()) {
+
+            stmItem.setInt(1, pedido.getId());
+            stmItem.setInt(2, item.getProduto().getId());
+            stmItem.setInt(3, item.getQuantidade());
+            stmItem.setDouble(4, item.getProduto().getPreco());
+
+            stmItem.addBatch();
+        }
+
+        stmItem.executeBatch();
+        stmItem.close();
+
+        con.commit();
+        con.close();
+
+        for (ItemPedido item : pedido.getItens()) {
+            produtoDao.baixarEstoque(
+                    item.getProduto().getId(),
+                    item.getQuantidade());
+        }
+
+        pedido.setStatus(Pedido.FINALIZADO);
+
+        return pedido;
+
+    } catch (SQLException e) {
+
+        e.printStackTrace();
+
+        try {
+            con.rollback();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
     }
 }
