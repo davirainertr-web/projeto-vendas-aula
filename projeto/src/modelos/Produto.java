@@ -47,28 +47,28 @@ public class Produto {
 
     @Override
     public String toString() {
-    return id + " | " + descricao + " | R$ " + preco + " | estoque: " + estoque;
+        return id + " | " + descricao + " | R$ " + preco + " | estoque: " + estoque;
     }
-    
+
     public int getEstoque() {
-    return estoque;
+        return estoque;
     }
 
     public void setEstoque(int estoque) {
-    this.estoque = estoque;
+        this.estoque = estoque;
     }
 
     public Produto(String descricao, double preco, int estoque) {
-    setDescricao(descricao);
-    setPreco(preco);
-    setEstoque(estoque);
+        setDescricao(descricao);
+        setPreco(preco);
+        setEstoque(estoque);
     }
 
     public Produto(int id, String descricao, double preco, int estoque) {
-    setId(id);
-    setDescricao(descricao);
-    setPreco(preco);
-    setEstoque(estoque);
+        setId(id);
+        setDescricao(descricao);
+        setPreco(preco);
+        setEstoque(estoque);
     }
 
 }

@@ -63,7 +63,7 @@ public class ProdutoDao implements ICRUD<Produto> {
 
     @Override
     public void alterar(Produto prod) {
-        String sql = "update tb_produtos set descricao=?, preco=?, estoque=?";
+        String sql = "update tb_produtos set descricao=?, preco=?, estoque=? where id=?";
         Connection con = ConectaDB.conectar();
 
         try {
@@ -97,8 +97,7 @@ public class ProdutoDao implements ICRUD<Produto> {
                         rs.getInt("id"),
                         rs.getString("descricao"),
                         rs.getDouble("preco"),
-                        rs.getInt("estoque")
-                );
+                        rs.getInt("estoque"));
             }
 
             rs.close();
@@ -126,8 +125,7 @@ public class ProdutoDao implements ICRUD<Produto> {
                         rs.getInt("id"),
                         rs.getString("descricao"),
                         rs.getDouble("preco"),
-                        rs.getInt("estoque")
-                ));
+                        rs.getInt("estoque")));
             }
 
             rs.close();
@@ -142,23 +140,23 @@ public class ProdutoDao implements ICRUD<Produto> {
     }
 
     public void baixarEstoque(int produtoId, int quantidade) {
-    String sql = "update tb_produtos set estoque = estoque - ? where id = ?";
+        String sql = "update tb_produtos set estoque = estoque - ? where id = ?";
 
-    Connection con = ConectaDB.conectar();
+        Connection con = ConectaDB.conectar();
 
-    try {
-        PreparedStatement stm = con.prepareStatement(sql);
+        try {
+            PreparedStatement stm = con.prepareStatement(sql);
 
-        stm.setInt(1, quantidade);
-        stm.setInt(2, produtoId);
+            stm.setInt(1, quantidade);
+            stm.setInt(2, produtoId);
 
-        stm.executeUpdate();
+            stm.executeUpdate();
 
-        stm.close();
-        con.close();
+            stm.close();
+            con.close();
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

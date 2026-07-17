@@ -29,19 +29,41 @@ public class Pedido {
         this.itens = itens;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getData() { return data; }
-    public void setData(LocalDateTime data) { this.data = data; }
+    public Cliente getCliente() {
+        return cliente;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
-    public List<ItemPedido> getItens() { return itens; }
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<ItemPedido> getItens() {
+        return itens;
+    }
 
     public double getTotal() {
         double total = 0;

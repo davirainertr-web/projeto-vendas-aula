@@ -14,7 +14,7 @@ public class Main {
     static Scanner sc = new Scanner(System.in);
     static ProdutoDao produtoDao = new ProdutoDao();
     static ClienteDao clienteDao = new ClienteDao();
-     static PedidoDao pedidoDao = new PedidoDao();
+    static PedidoDao pedidoDao = new PedidoDao();
 
     static Pedido carrinhoAtual = null;
 
@@ -232,166 +232,187 @@ public class Main {
 
     static void menuPedido() {
 
-    int opcao;
+        int opcao;
 
-    do {
+        do {
 
-        System.out.println("\n--- Pedidos ---");
-        System.out.println("1 - Novo pedido");
-        System.out.println("2 - Adicionar produto ao carrinho");
-        System.out.println("3 - Remover produto do carrinho");
-        System.out.println("4 - Finalizar pedido");
-        System.out.println("5 - Consultar pedido");
-        System.out.println("6 - Listar pedidos");
-        System.out.println("0 - Voltar");
+            System.out.println("\n--- Pedidos ---");
+            System.out.println("1 - Iniciar novo pedido");
+            System.out.println("2 - Adicionar produto ao carrinho");
+            System.out.println("3 - Remover produto do carrinho");
+            System.out.println("4 - Ver carrinho atual");
+            System.out.println("5 - Finalizar pedido");
+            System.out.println("6 - Consultar pedido por ID");
+            System.out.println("7 - Listar todos os pedidos");
+            System.out.println("0 - Voltar");
 
-        System.out.print("Escolha: ");
-        opcao = Integer.parseInt(sc.nextLine());
+            System.out.print("Escolha: ");
+            opcao = Integer.parseInt(sc.nextLine());
 
-        switch (opcao) {
+            switch (opcao) {
 
-            case 1:
-                iniciarPedido();
-                break;
+                case 1:
+                    iniciarPedido();
+                    break;
 
-            case 2:
-                adicionarAoCarrinho();
-                break;
+                case 2:
+                    adicionarAoCarrinho();
+                    break;
 
-            case 3:
-                removerDoCarrinho();
-                break;
+                case 3:
+                    removerDoCarrinho();
+                    break;
 
-            case 4:
-                finalizarPedido();
-                break;
+                case 4:
+                    verCarrinho();
+                    break;
 
-            case 5:
-                consultarPedido();
-                break;
+                case 5:
+                    finalizarPedido();
+                    break;
 
-            case 6:
-                listarPedidos();
-                break;
+                case 6:
+                    consultarPedido();
+                    break;
 
-            case 0:
-                break;
+                case 7:
+                    listarPedidos();
+                    break;
 
-            default:
-                System.out.println("Opção inválida.");
-        }
+                case 0:
+                    break;
 
-    } while (opcao != 0);
+                default:
+                    System.out.println("Opção inválida.");
+            }
+
+        } while (opcao != 0);
     }
 
     static void iniciarPedido() {
 
-    System.out.print("ID do cliente: ");
-    int id = Integer.parseInt(sc.nextLine());
+        System.out.print("ID do cliente: ");
+        int id = Integer.parseInt(sc.nextLine());
 
-    Cliente cliente = clienteDao.consultar(id);
+        Cliente cliente = clienteDao.consultar(id);
 
-    if(cliente == null){
-        System.out.println("Cliente não encontrado.");
-        return;
-    }
+        if (cliente == null) {
+            System.out.println("Cliente não encontrado.");
+            return;
+        }
 
-    carrinhoAtual = pedidoDao.criarPedido(cliente);
+        carrinhoAtual = pedidoDao.criarPedido(cliente);
 
-    System.out.println("Pedido criado.");
+        System.out.println("Pedido criado.");
     }
 
     static void consultarPedido() {
 
-    System.out.print("ID do pedido: ");
-    int id = Integer.parseInt(sc.nextLine());
+        System.out.print("ID do pedido: ");
+        int id = Integer.parseInt(sc.nextLine());
 
-    Pedido p = pedidoDao.consultar(id);
+        Pedido p = pedidoDao.consultar(id);
 
-    if (p != null) {
-        System.out.println(p);
+        if (p != null) {
+            System.out.println(p);
 
-        // mostra os itens do pedido
-        p.getItens().forEach(System.out::println);
+            // mostra os itens do pedido
+            p.getItens().forEach(System.out::println);
 
-    } else {
-        System.out.println("Pedido não encontrado.");
-    }
+        } else {
+            System.out.println("Pedido não encontrado.");
+        }
     }
 
     static void listarPedidos() {
 
-    List<Pedido> pedidos = pedidoDao.consultar();
+        List<Pedido> pedidos = pedidoDao.consultar();
 
-    if (pedidos.isEmpty()) {
-        System.out.println("Nenhum pedido cadastrado.");
-        return;
-    }
+        if (pedidos.isEmpty()) {
+            System.out.println("Nenhum pedido cadastrado.");
+            return;
+        }
 
-    for (Pedido p : pedidos) {
-        System.out.println(p);
-    }
+        for (Pedido p : pedidos) {
+            System.out.println(p);
+        }
     }
 
     static void adicionarAoCarrinho() {
 
-    if (carrinhoAtual == null) {
-        System.out.println("Nenhum pedido aberto.");
-        return;
-    }
+        if (carrinhoAtual == null) {
+            System.out.println("Nenhum pedido aberto.");
+            return;
+        }
 
-    System.out.print("ID do produto: ");
-    int id = Integer.parseInt(sc.nextLine());
+        System.out.print("ID do produto: ");
+        int id = Integer.parseInt(sc.nextLine());
 
-    Produto produto = produtoDao.consultar(id);
+        Produto produto = produtoDao.consultar(id);
 
-    if (produto == null) {
-        System.out.println("Produto não encontrado.");
-        return;
-    }
+        if (produto == null) {
+            System.out.println("Produto não encontrado.");
+            return;
+        }
 
-    System.out.print("Quantidade: ");
-    int quantidade = Integer.parseInt(sc.nextLine());
+        System.out.print("Quantidade: ");
+        int quantidade = Integer.parseInt(sc.nextLine());
 
-    pedidoDao.adicionarAoCarrinho(carrinhoAtual, produto, quantidade);
+        boolean adicionou = pedidoDao.adicionarAoCarrinho(carrinhoAtual, produto, quantidade);
 
-    System.out.println("Produto adicionado ao carrinho.");
+        if (adicionou) {
+            System.out.println("Produto adicionado ao carrinho.");
+        }
     }
 
     static void removerDoCarrinho() {
 
-    if (carrinhoAtual == null) {
-        System.out.println("Nenhum pedido aberto.");
-        return;
+        if (carrinhoAtual == null) {
+            System.out.println("Nenhum pedido aberto.");
+            return;
+        }
+
+        System.out.print("ID do produto: ");
+        int idProduto = Integer.parseInt(sc.nextLine());
+
+        boolean removeu = pedidoDao.removerDoCarrinho(carrinhoAtual, idProduto);
+
+        if (removeu) {
+            System.out.println("Produto removido do carrinho.");
+        }
+
     }
 
-    System.out.print("ID do produto: ");
-    int idProduto = Integer.parseInt(sc.nextLine());
+    static void finalizarPedido() {
 
-    pedidoDao.removerDoCarrinho(carrinhoAtual, idProduto);
+        if (carrinhoAtual == null) {
+            System.out.println("Nenhum pedido aberto.");
+            return;
+        }
 
-    System.out.println("Produto removido do carrinho.");
+        Pedido pedido = pedidoDao.finalizarPedido(carrinhoAtual);
+
+        if (pedido != null) {
+
+            System.out.println("Pedido finalizado!");
+            System.out.println(pedido);
+
+            carrinhoAtual = null;
+        }
 
     }
 
-    static void
-    finalizarPedido() {
+    static void verCarrinho() {
 
-    if (carrinhoAtual == null) {
-        System.out.println("Nenhum pedido aberto.");
-        return;
+        if (carrinhoAtual == null) {
+            System.out.println("Nenhum carrinho aberto.");
+            return;
+        }
+
+        System.out.println(carrinhoAtual);
+
+        carrinhoAtual.getItens().forEach(System.out::println);
+
     }
-
-    Pedido pedido = pedidoDao.finalizarPedido(carrinhoAtual);
-
-    if (pedido != null) {
-
-        System.out.println("Pedido finalizado!");
-        System.out.println(pedido);
-
-        carrinhoAtual = null;
-    }
-
-}
 
 }

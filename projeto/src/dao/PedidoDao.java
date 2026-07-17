@@ -109,114 +109,126 @@ public class PedidoDao {
         return itens;
     }
 
-    public void adicionarAoCarrinho(Pedido pedido, Produto produto, int quantidade) {
+    public boolean adicionarAoCarrinho(Pedido pedido, Produto produto, int quantidade) {
 
-    if (quantidade <= 0) {
-        System.out.println("Quantidade inválida.");
-        return;
-    }
-
-    if (produto.getEstoque() < quantidade) {
-        System.out.println("Estoque insuficiente.");
-        return;
-    }
-
-    for (ItemPedido item : pedido.getItens()) {
-
-        if (item.getProduto().getId() == produto.getId()) {
-            item.setQuantidade(item.getQuantidade() + quantidade);
-            return;
+        if (quantidade <= 0) {
+            System.out.println("Quantidade inválida.");
+            return false;
         }
 
+        if (produto.getEstoque() < quantidade) {
+            System.out.println("Estoque insuficiente.");
+            return false;
+        }
+
+        for (ItemPedido item : pedido.getItens()) {
+
+            if (item.getProduto().getId() == produto.getId()) {
+                item.setQuantidade(item.getQuantidade() + quantidade);
+                produto.setEstoque(produto.getEstoque() - quantidade);
+                return true;
+            }
+
+        }
+
+        pedido.getItens().add(new ItemPedido(produto, quantidade));
+        produto.setEstoque(produto.getEstoque() - quantidade);
+        return true;
     }
 
-    pedido.getItens().add(new ItemPedido(produto, quantidade));
-    }
+    public boolean removerDoCarrinho(Pedido pedido, int produtoId) {
 
-    public void removerDoCarrinho(Pedido pedido, int produtoId) {
+        for (ItemPedido item : pedido.getItens()) {
 
-    boolean removido = pedido.getItens()
-            .removeIf(item -> item.getProduto().getId() == produtoId);
+            if (item.getProduto().getId() == produtoId) {
 
-    if (!removido) {
+                item.getProduto().setEstoque(
+                        item.getProduto().getEstoque() + item.getQuantidade());
+
+                pedido.getItens().remove(item);
+
+                return true;
+            }
+        }
+
         System.out.println("Produto não encontrado no carrinho.");
-    }
+        return false;
     }
 
     public Pedido finalizarPedido(Pedido pedido) {
 
-    if (pedido.getItens().isEmpty()) {
-        System.out.println("Não é possível finalizar um pedido sem itens.");
-        return null;
-    }
-
-    String sqlPedido = "insert into tb_pedidos(cliente_id, data, status) values(?,?,?)";
-    String sqlItem = "insert into tb_itens_pedido(pedido_id, produto_id, quantidade, preco_unitario) values(?,?,?,?)";
-
-    Connection con = ConectaDB.conectar();
-
-    try {
-
-        con.setAutoCommit(false);
-
-        PreparedStatement stmPedido = con.prepareStatement(
-                sqlPedido,
-                Statement.RETURN_GENERATED_KEYS);
-
-        stmPedido.setInt(1, pedido.getCliente().getId());
-        stmPedido.setTimestamp(2, Timestamp.valueOf(pedido.getData()));
-        stmPedido.setString(3, Pedido.FINALIZADO);
-
-        stmPedido.execute();
-
-        ResultSet rs = stmPedido.getGeneratedKeys();
-
-        if (rs.next()) {
-            pedido.setId(rs.getInt(1));
+        if (pedido.getItens().isEmpty()) {
+            System.out.println("Não é possível finalizar um pedido sem itens.");
+            return null;
         }
 
-        rs.close();
-        stmPedido.close();
+        String sqlPedido = "insert into tb_pedidos(cliente_id, data, status) values(?,?,?)";
+        String sqlItem = "insert into tb_itens_pedido(pedido_id, produto_id, quantidade, preco_unitario) values(?,?,?,?)";
 
-        PreparedStatement stmItem = con.prepareStatement(sqlItem);
-
-        for (ItemPedido item : pedido.getItens()) {
-
-            stmItem.setInt(1, pedido.getId());
-            stmItem.setInt(2, item.getProduto().getId());
-            stmItem.setInt(3, item.getQuantidade());
-            stmItem.setDouble(4, item.getProduto().getPreco());
-
-            stmItem.addBatch();
-        }
-
-        stmItem.executeBatch();
-        stmItem.close();
-
-        con.commit();
-        con.close();
-
-        for (ItemPedido item : pedido.getItens()) {
-            produtoDao.baixarEstoque(
-                    item.getProduto().getId(),
-                    item.getQuantidade());
-        }
-
-        pedido.setStatus(Pedido.FINALIZADO);
-
-        return pedido;
-
-    } catch (SQLException e) {
-
-        e.printStackTrace();
+        Connection con = ConectaDB.conectar();
 
         try {
-            con.rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
 
-        return null;
-    }
+            con.setAutoCommit(false);
+
+            PreparedStatement stmPedido = con.prepareStatement(
+                    sqlPedido,
+                    Statement.RETURN_GENERATED_KEYS);
+
+            stmPedido.setInt(1, pedido.getCliente().getId());
+            stmPedido.setTimestamp(2, Timestamp.valueOf(pedido.getData()));
+            stmPedido.setString(3, Pedido.FINALIZADO);
+
+            stmPedido.execute();
+
+            ResultSet rs = stmPedido.getGeneratedKeys();
+
+            if (rs.next()) {
+                pedido.setId(rs.getInt(1));
+            }
+
+            rs.close();
+            stmPedido.close();
+
+            PreparedStatement stmItem = con.prepareStatement(sqlItem);
+
+            for (ItemPedido item : pedido.getItens()) {
+
+                stmItem.setInt(1, pedido.getId());
+                stmItem.setInt(2, item.getProduto().getId());
+                stmItem.setInt(3, item.getQuantidade());
+                stmItem.setDouble(4, item.getProduto().getPreco());
+
+                stmItem.addBatch();
+            }
+
+            stmItem.executeBatch();
+            stmItem.close();
+
+            con.commit();
+            con.close();
+
+            for (ItemPedido item : pedido.getItens()) {
+                produtoDao.baixarEstoque(
+                        item.getProduto().getId(),
+                        item.getQuantidade());
+            }
+
+            pedido.setStatus(Pedido.FINALIZADO);
+
+            return pedido;
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+            try {
+                con.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            return null;
+        }
     }
 }
