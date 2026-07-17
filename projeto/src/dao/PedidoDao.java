@@ -106,4 +106,28 @@ public class PedidoDao {
 
         return itens;
     }
+
+    public void adicionarAoCarrinho(Pedido pedido, Produto produto, int quantidade) {
+
+    if (quantidade <= 0) {
+        System.out.println("Quantidade inválida.");
+        return;
+    }
+
+    if (produto.getEstoque() < quantidade) {
+        System.out.println("Estoque insuficiente.");
+        return;
+    }
+
+    for (ItemPedido item : pedido.getItens()) {
+
+        if (item.getProduto().getId() == produto.getId()) {
+            item.setQuantidade(item.getQuantidade() + quantidade);
+            return;
+        }
+
+    }
+
+    pedido.getItens().add(new ItemPedido(produto, quantidade));
+    }
 }

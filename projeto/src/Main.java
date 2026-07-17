@@ -238,8 +238,9 @@ public class Main {
 
         System.out.println("\n--- Pedidos ---");
         System.out.println("1 - Novo pedido");
-        System.out.println("2 - Consultar pedido");
-        System.out.println("3 - Listar pedidos");
+        System.out.println("2 - Adicionar produto ao carrinho");
+        System.out.println("3 - Consultar pedido");
+        System.out.println("4 - Listar pedidos");
         System.out.println("0 - Voltar");
 
         System.out.print("Escolha: ");
@@ -252,12 +253,16 @@ public class Main {
                 break;
 
             case 2:
-                consultarPedido();
-                break;
+            adicionarAoCarrinho();
+            break;
 
             case 3:
-                listarPedidos();
-                break;
+            consultarPedido();
+            break;
+
+            case 4:
+            listarPedidos();
+            break;
 
             case 0:
                 break;
@@ -316,6 +321,31 @@ public class Main {
     for (Pedido p : pedidos) {
         System.out.println(p);
     }
+    }
+
+    static void adicionarAoCarrinho() {
+
+    if (carrinhoAtual == null) {
+        System.out.println("Nenhum pedido aberto.");
+        return;
+    }
+
+    System.out.print("ID do produto: ");
+    int id = Integer.parseInt(sc.nextLine());
+
+    Produto produto = produtoDao.consultar(id);
+
+    if (produto == null) {
+        System.out.println("Produto não encontrado.");
+        return;
+    }
+
+    System.out.print("Quantidade: ");
+    int quantidade = Integer.parseInt(sc.nextLine());
+
+    pedidoDao.adicionarAoCarrinho(carrinhoAtual, produto, quantidade);
+
+    System.out.println("Produto adicionado ao carrinho.");
     }
 
 }
