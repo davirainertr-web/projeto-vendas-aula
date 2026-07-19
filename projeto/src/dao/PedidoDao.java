@@ -111,29 +111,41 @@ public class PedidoDao {
 
     public boolean adicionarAoCarrinho(Pedido pedido, Produto produto, int quantidade) {
 
-        if (quantidade <= 0) {
-            System.out.println("Quantidade inválida.");
-            return false;
+    if (quantidade <= 0) {
+        System.out.println("Quantidade inválida.");
+        return false;
+    }
+
+    int quantidadeNoCarrinho = 0;
+
+    for (ItemPedido item : pedido.getItens()) {
+
+        if (item.getProduto().getId() == produto.getId()) {
+            quantidadeNoCarrinho = item.getQuantidade();
+            break;
         }
 
-        if (produto.getEstoque() < quantidade) {
-            System.out.println("Estoque insuficiente.");
-            return false;
+    }
+
+    if (quantidadeNoCarrinho + quantidade > produto.getEstoque()) {
+        System.out.println("Estoque insuficiente.");
+        return false;
+    }
+
+    for (ItemPedido item : pedido.getItens()) {
+
+        if (item.getProduto().getId() == produto.getId()) {
+
+            item.setQuantidade(item.getQuantidade() + quantidade);
+            return true;
+
         }
 
-        for (ItemPedido item : pedido.getItens()) {
+    }
 
-            if (item.getProduto().getId() == produto.getId()) {
-                item.setQuantidade(item.getQuantidade() + quantidade);
-                produto.setEstoque(produto.getEstoque() - quantidade);
-                return true;
-            }
+    pedido.getItens().add(new ItemPedido(produto, quantidade));
 
-        }
-
-        pedido.getItens().add(new ItemPedido(produto, quantidade));
-        produto.setEstoque(produto.getEstoque() - quantidade);
-        return true;
+    return true;
     }
 
     public boolean removerDoCarrinho(Pedido pedido, int produtoId) {
