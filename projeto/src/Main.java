@@ -22,12 +22,12 @@ public class Main {
         int opcao;
 
         do {
-            System.out.println("\n===== MENU =====");
-            System.out.println("1 - Produtos");
-            System.out.println("2 - Clientes");
-            System.out.println("3 - Pedidos");
-            System.out.println("0 - Sair");
-            System.out.print("Escolha: ");
+            System.out.println("       MENU");
+            System.out.println("número(1): Produtos");
+            System.out.println("número(2): Clientes");
+            System.out.println("número(3): Pedidos");
+            System.out.println("número(0): Sair");
+            System.out.print("Número: ");
 
             opcao = Integer.parseInt(sc.nextLine());
 
@@ -61,7 +61,7 @@ public class Main {
         System.out.print("Preço: ");
         double preco = Double.parseDouble(sc.nextLine());
 
-        System.out.println("Estoque: ");
+        System.out.print("Estoque: ");
         int estoque = Integer.parseInt(sc.nextLine());
 
         Produto p = new Produto(descricao, preco, estoque);
@@ -122,13 +122,13 @@ public class Main {
         int opcao;
 
         do {
-            System.out.println("\n--- Clientes ---");
-            System.out.println("1 - Cadastrar");
-            System.out.println("2 - Listar");
-            System.out.println("3 - Consultar por ID");
-            System.out.println("4 - Alterar");
-            System.out.println("5 - Excluir");
-            System.out.println("0 - Voltar");
+            System.out.println("    Clientes");
+            System.out.println("número(1): Cadastrar");
+            System.out.println("número(2): Listar");
+            System.out.println("número(3): Consultar por ID");
+            System.out.println("número(4): Alterar");
+            System.out.println("número(5): Excluir");
+            System.out.println("número(0): Voltar");
             System.out.print("Escolha: ");
 
             opcao = Integer.parseInt(sc.nextLine());
@@ -236,15 +236,15 @@ public class Main {
 
         do {
 
-            System.out.println("\n--- Pedidos ---");
-            System.out.println("1 - Iniciar novo pedido");
-            System.out.println("2 - Adicionar produto ao carrinho");
-            System.out.println("3 - Remover produto do carrinho");
-            System.out.println("4 - Ver carrinho atual");
-            System.out.println("5 - Finalizar pedido");
-            System.out.println("6 - Consultar pedido por ID");
-            System.out.println("7 - Listar todos os pedidos");
-            System.out.println("0 - Voltar");
+            System.out.println("         Pedidos");
+            System.out.println("número(1): Iniciar novo pedido");
+            System.out.println("número(2): Adicionar produto ao carrinho");
+            System.out.println("número(3): Remover produto do carrinho");
+            System.out.println("número(4): Ver carrinho atual");
+            System.out.println("número(5): Finalizar pedido");
+            System.out.println("número(6): Consultar pedido por ID");
+            System.out.println("número(7): Listar todos os pedidos");
+            System.out.println("número(0): Voltar");
 
             System.out.print("Escolha: ");
             opcao = Integer.parseInt(sc.nextLine());
