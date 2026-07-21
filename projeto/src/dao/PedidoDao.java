@@ -148,23 +148,39 @@ public class PedidoDao {
     return true;
     }
 
-    public boolean removerDoCarrinho(Pedido pedido, int produtoId) {
+    public boolean removerDoCarrinho(Pedido pedido, int produtoId, int quantidade) {
 
-        for (ItemPedido item : pedido.getItens()) {
+    for (ItemPedido item : pedido.getItens()) {
 
-            if (item.getProduto().getId() == produtoId) {
+        if (item.getProduto().getId() == produtoId) {
 
-                item.getProduto().setEstoque(
-                        item.getProduto().getEstoque() + item.getQuantidade());
-
-                pedido.getItens().remove(item);
-
-                return true;
+            if (quantidade <= 0) {
+                System.out.println("Quantidade inválida.");
+                return false;
             }
-        }
 
-        System.out.println("Produto não encontrado no carrinho.");
-        return false;
+            if (quantidade > item.getQuantidade()) {
+                System.out.println("Você possui apenas "
+                        + item.getQuantidade()
+                        + " unidades no carrinho.");
+                return false;
+            }
+
+            item.setQuantidade(item.getQuantidade() - quantidade);
+
+            item.getProduto().setEstoque(
+                    item.getProduto().getEstoque() + quantidade);
+
+            if (item.getQuantidade() == 0) {
+                pedido.getItens().remove(item);
+            }
+
+            return true;
+        }
+    }
+
+    System.out.println("Produto não encontrado.");
+    return false;
     }
 
     public Pedido finalizarPedido(Pedido pedido) {
@@ -242,5 +258,34 @@ public class PedidoDao {
 
             return null;
         }
+    }
+
+    public boolean clientePossuiPedidos(int clienteId) {
+
+    String sql = "SELECT COUNT(*) FROM tb_pedidos WHERE cliente_id = ?";
+
+    Connection con = ConectaDB.conectar();
+
+    try {
+
+        PreparedStatement stm = con.prepareStatement(sql);
+        stm.setInt(1, clienteId);
+
+        ResultSet rs = stm.executeQuery();
+
+        rs.next();
+
+        boolean possuiPedidos = rs.getInt(1) > 0;
+
+        rs.close();
+        stm.close();
+        con.close();
+
+        return possuiPedidos;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return true;
+    }
     }
 }

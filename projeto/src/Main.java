@@ -22,6 +22,8 @@ public class Main {
         int opcao;
 
         do {
+            System.out.println();
+            System.out.println();
             System.out.println("       MENU");
             System.out.println("número(1): Produtos");
             System.out.println("número(2): Clientes");
@@ -84,6 +86,9 @@ public class Main {
         System.out.print("Email: ");
         String email = sc.nextLine();
 
+        System.out.print("CEP: ");
+        String cep = sc.nextLine();
+
         System.out.print("Rua: ");
         String rua = sc.nextLine();
 
@@ -92,9 +97,6 @@ public class Main {
 
         System.out.print("Bairro: ");
         String bairro = sc.nextLine();
-
-        System.out.print("CEP: ");
-        String cep = sc.nextLine();
 
         System.out.print("Cidade: ");
         String cidade = sc.nextLine();
@@ -122,7 +124,9 @@ public class Main {
         int opcao;
 
         do {
-            System.out.println("    Clientes");
+            System.out.println();
+            System.out.println();
+            System.out.println("     Clientes");
             System.out.println("número(1): Cadastrar");
             System.out.println("número(2): Listar");
             System.out.println("número(3): Consultar por ID");
@@ -205,16 +209,40 @@ public class Main {
             return;
         }
 
+        System.out.print("Novo cpf: ");
+        c.setNome(sc.nextLine());
+
         System.out.print("Novo nome: ");
         c.setNome(sc.nextLine());
 
         System.out.print("Novo email: ");
         c.setEmail(sc.nextLine());
 
+        System.out.print("Novo cep: ");
+        c.setCidade(sc.nextLine());
+
+        System.out.print("Nova rua: ");
+        c.setCidade(sc.nextLine());
+
+        System.out.print("Nova número: ");
+        c.setCidade(sc.nextLine());
+
+        System.out.print("Novo bairro: ");
+        c.setCidade(sc.nextLine());
+
         System.out.print("Nova cidade: ");
         c.setCidade(sc.nextLine());
 
+        System.out.print("Novo estado: ");
+        c.setCidade(sc.nextLine());
+
         clienteDao.alterar(c);
+
+        if (carrinhoAtual != null &&
+                carrinhoAtual.getCliente().getId() == c.getId()) {
+
+            carrinhoAtual.setCliente(c);
+        }
 
         System.out.println("Cliente alterado.");
     }
@@ -224,10 +252,14 @@ public class Main {
         System.out.print("ID: ");
         int id = Integer.parseInt(sc.nextLine());
 
+        if (pedidoDao.clientePossuiPedidos(id)) {
+            System.out.println("Não é possível excluir este cliente, pois ele possui pedidos cadastrados.");
+            return;
+        }
+
         clienteDao.deletar(id);
 
         System.out.println("Cliente excluído.");
-
     }
 
     static void menuPedido() {
@@ -235,7 +267,8 @@ public class Main {
         int opcao;
 
         do {
-
+            System.out.println();
+            System.out.println();
             System.out.println("         Pedidos");
             System.out.println("número(1): Iniciar novo pedido");
             System.out.println("número(2): Adicionar produto ao carrinho");
@@ -375,7 +408,13 @@ public class Main {
         System.out.print("ID do produto: ");
         int idProduto = Integer.parseInt(sc.nextLine());
 
-        boolean removeu = pedidoDao.removerDoCarrinho(carrinhoAtual, idProduto);
+        System.out.print("Quantidade para remover: ");
+        int quantidade = Integer.parseInt(sc.nextLine());
+
+        boolean removeu = pedidoDao.removerDoCarrinho(
+                carrinhoAtual,
+                idProduto,
+                quantidade);
 
         if (removeu) {
             System.out.println("Produto removido do carrinho.");
