@@ -1,2 +1,17 @@
 # projeto-vendas-aula
-Projeto de aula do Entra 21 focado no desenvolvimento de um sistema de vendas com operações CRUD para produtos, clientes e finalização de pedidos.
+Projeto Sistema de Vendas
+
+Tecnologias:
+- Java
+- JDBC
+- MySQL
+
+Funcionalidades:
+- Cadastro de produtos
+- Cadastro de clientes
+- Criação de pedidos
+- Carrinho
+- Finalização de pedidos
+
+Banco:
+Arquivo localizado na pasta Banco de dados.
